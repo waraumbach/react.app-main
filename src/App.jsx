@@ -7,6 +7,11 @@ function App() {
   const [users, setUsers] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [age, setAge] = useState();
+
   const apiCall = async () => {
     try {
       const response = await axios.get("http://localhost:3000/users");
@@ -18,9 +23,24 @@ function App() {
     }
   };
 
+  const postUser = async (e) => {
+    e.preventDefault();
+    try {
+      const newUser = await axios.get("http://localhost:3000/users", {
+        name: name,
+        surname: surname,
+        age: age,
+      });
+    } catch (err) {
+      setError(err);
+    }
+  };
+
   useEffect(() => {
     apiCall();
   }, []);
+
+  console.log(name, surname, age);
 
   if (error) return <p>{error.message}</p>;
   if (loading) return <p>{loading}</p>;
@@ -33,17 +53,20 @@ function App() {
             <h3>
               Hello my name is {user.name} {user.surname}
             </h3>
-
-            <button
-              style={{ color: lightGreen }}
-              onClick={() => setUsers(!users)}
-            >
-              click
-            </button>
-            <h3>hello</h3>
           </>
         );
       })}
+      <form onSubmit={postUser}>
+        <input
+          type="text"
+          placeholder="name"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input type="text" onChange={(e) => setSurname(e.target.value)} />
+        <input type="number" onChange={(e) => setAge(e.target.value)} />
+        <br />
+        <button type="submit">Add User</button>
+      </form>
     </>
   );
 }
