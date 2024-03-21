@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
-import { lightGreen } from "@mui/material/colors";
 
 function App() {
   const [users, setUsers] = useState(null);
@@ -26,13 +25,19 @@ function App() {
   const postUser = async (e) => {
     e.preventDefault();
     try {
-      const newUser = await axios.get("http://localhost:3000/users", {
+      const newUser = await axios.post("http://localhost:3000/users", {
         name: name,
         surname: surname,
         age: age,
       });
+      console.log(newUser);
     } catch (err) {
       setError(err);
+    } finally {
+      apiCall();
+      setName("");
+      setSurname("");
+      setAge("");
     }
   };
 
@@ -60,10 +65,21 @@ function App() {
         <input
           type="text"
           placeholder="name"
+          value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <input type="text" onChange={(e) => setSurname(e.target.value)} />
-        <input type="number" onChange={(e) => setAge(e.target.value)} />
+        <input
+          type="text"
+          placeholder="surname"
+          value={surname}
+          onChange={(e) => setSurname(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="age"
+          value={age}
+          onChange={(e) => setAge(e.target.value)}
+        />
         <br />
         <button type="submit">Add User</button>
       </form>
